@@ -1,4 +1,6 @@
-﻿namespace FischeVerschenkenRevived
+﻿using System;
+
+namespace FischeVerschenkenRevived
 {
     internal class Helpers
     {
@@ -59,6 +61,51 @@
 
             return toReturn;
 
+        }
+
+        internal static int StartInput(string v)
+        {
+            int width;
+            int height;
+
+            switch (v)
+            {
+                case "Height":
+                    int maxHeight = Console.LargestWindowHeight - 10;
+                    Console.Clear();
+                    Console.WriteLine("Bitte geben Sie die Höhe");
+                    Console.WriteLine("des Spielfelds als Zahl ein");
+                    Console.WriteLine("gültig: 20 - " + maxHeight.ToString());
+                    if (Int32.TryParse(Console.ReadLine(), out height) == true && height <= maxHeight && height > 19)
+                    {
+                        return height;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Die eingegebene Zahl ist leider nicht gültig. Bitte neue Höhe eingeben.");
+                        StartInput(v);
+                    }
+                    break;
+                case "Width":
+                    int maxWidth = (Console.LargestWindowWidth - 10) / 2;
+                    Console.Clear();
+                    Console.WriteLine("Bitte geben Sie die Breite");
+                    Console.WriteLine("des Spielfelds als Zahl ein");
+                    Console.WriteLine("gültig: 20 - " + maxWidth.ToString());
+                    if (Int32.TryParse(Console.ReadLine(), out width) == true && width <= maxWidth && width > 19)
+                    {
+                        return width;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Die eingegebene Zahl ist leider nicht gültig. Bitte neue Höhe eingeben.");
+                        StartInput(v);
+                    }
+                    break;
+                default:
+                    break;
+            }
+            return 0;
         }
     }
 }
