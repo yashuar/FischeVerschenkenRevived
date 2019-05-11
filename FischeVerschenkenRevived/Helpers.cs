@@ -4,17 +4,19 @@ namespace FischeVerschenkenRevived
 {
     internal class Helpers
     {
+        private static int AmountOfPlacedShips;
+        private static Random random = new Random();
         public static string[] MainMenu()
         {
-            string Line1and11   = "+-----------------------------+";
-            string Line2        = "|                       _ O X |";
-            string Line3        = "|                             |";
-            string Line4and10   = "|  +-----------------------+  |";
-            string Line5        = "|  | { } Schnelles Spiel   |  |";
-            string Line6        = "|  | { } Höhe einrichten   |  |";
-            string Line7        = "|  | { } Breite einrichten |  |";
-            string Line8        = "|  | { } Spiel starten     |  |";
-            string Line9        = "|  | { } Beenden           |  |";
+            string Line1and11 = "+-----------------------------+";
+            string Line2 = "|                       _ O X |";
+            string Line3 = "|                             |";
+            string Line4and10 = "|  +-----------------------+  |";
+            string Line5 = "|  | { } Schnelles Spiel   |  |";
+            string Line6 = "|  | { } Höhe einrichten   |  |";
+            string Line7 = "|  | { } Breite einrichten |  |";
+            string Line8 = "|  | { } Spiel starten     |  |";
+            string Line9 = "|  | { } Beenden           |  |";
 
             string[] toReturn = new string[11];
             toReturn[0] = Line1and11;
@@ -35,15 +37,15 @@ namespace FischeVerschenkenRevived
         }
         public static string[] MainMenuSelected()
         {
-            string Line1and11   = "+-----------------------------+";
-            string Line2        = "|                       _ O X |";
-            string Line3        = "|                             |";
-            string Line4and10   = "|  +-----------------------+  |";
-            string Line5        = "|  | {o} Schnelles Spiel   |  |";
-            string Line6        = "|  | {o} Höhe einrichten   |  |";
-            string Line7        = "|  | {o} Breite einrichten |  |";
-            string Line8        = "|  | {o} Spiel starten     |  |";
-            string Line9        = "|  | {o} Beenden           |  |";
+            string Line1and11 = "+-----------------------------+";
+            string Line2 = "|                       _ O X |";
+            string Line3 = "|                             |";
+            string Line4and10 = "|  +-----------------------+  |";
+            string Line5 = "|  | {o} Schnelles Spiel   |  |";
+            string Line6 = "|  | {o} Höhe einrichten   |  |";
+            string Line7 = "|  | {o} Breite einrichten |  |";
+            string Line8 = "|  | {o} Spiel starten     |  |";
+            string Line9 = "|  | {o} Beenden           |  |";
 
             string[] toReturn = new string[11];
             toReturn[0] = Line1and11;
@@ -106,6 +108,31 @@ namespace FischeVerschenkenRevived
                     break;
             }
             return 0;
+        }
+
+        internal static Game.ShipType RandomShipType()
+        {
+
+            return (Game.ShipType)random.Next(2, 5);
+        }
+
+        internal static bool CheckSurroundingFor(Position possiblePosition, System.Collections.Generic.List<Position> battlefield, Game game)
+        {
+            foreach (Position pos in battlefield)
+            {
+                for (int x = -1; x < 3; x++)
+                {
+                    for (int y = -1; y < 3; y++)
+                    {
+                        // if Surroundings are blocked or out of Border
+                        if ((pos.XValue + x == possiblePosition.XValue || pos.XValue - x < 0 || pos.XValue + x > Program.BoardWidth) || pos.YValue + y == possiblePosition.YValue || pos.YValue - y < 0 || pos.YValue + y > Program.BoardHeight)
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+            return true;
         }
     }
 }

@@ -8,8 +8,7 @@ namespace FischeVerschenkenRevived
 {
     class Program
     {
-        // Spielfeld
-        GameCell[] gameCellsField;
+        Game gameInstance = new Game();
 
         private static bool isMenuFinished;
         public static ConsoleKey CurrentKey = ConsoleKey.NoName;
@@ -22,6 +21,7 @@ namespace FischeVerschenkenRevived
 
         public static int BoardWidth;
         public static int BoardHeight;
+        internal static bool isFirstGameStart;
 
         static void Main(string[] args)
         {
@@ -144,7 +144,7 @@ namespace FischeVerschenkenRevived
                 switch (MenuIndex)
                 {
                     case 0:
-                        QuickPlay();
+                        StartPreparedGame("Quickplay");
                         break;
                     case 1:
                         SetFieldHeight();
@@ -153,7 +153,7 @@ namespace FischeVerschenkenRevived
                         SetFieldWidth();
                         break;
                     case 3:
-                        StartPreparedGame();
+                        StartPreparedGame("Play");
                         break;
                     case 4:
                         Environment.Exit(0);
@@ -164,11 +164,14 @@ namespace FischeVerschenkenRevived
             }
         }
 
-        private static void StartPreparedGame()
+        private static void StartPreparedGame(string GameType)
         {
-            if (BoardHeight > 0 && BoardWidth > 0)
+            Game instanceOfGame = new Game();
+
+            if ((BoardHeight > 0 && BoardWidth > 0) || GameType == "Quickplay")
             {
                 isMenuFinished = true;
+                instanceOfGame.RunGame(GameType);
             }
             else
             {
@@ -190,11 +193,6 @@ namespace FischeVerschenkenRevived
         private static void SetFieldHeight()
         {
             BoardHeight = Helpers.StartInput("Height");
-        }
-
-        private static void QuickPlay()
-        {
-            Game.RunGame("QuickPlay");
         }
     }
 }
