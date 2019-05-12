@@ -116,18 +116,61 @@ namespace FischeVerschenkenRevived
             return (Game.ShipType)random.Next(2, 5);
         }
 
-        internal static bool CheckSurroundingFor(Position possiblePosition, System.Collections.Generic.List<Position> battlefield, Game game)
+        internal static bool CheckSurroundingFor(Position possiblePosition, System.Collections.Generic.List<Ship> battlefield, Ship ship, Game game)
         {
-            foreach (Position pos in battlefield)
+
+            foreach (Ship s in battlefield)
             {
-                for (int x = -1; x < 3; x++)
+                foreach (Position subship in s.subShips)
                 {
-                    for (int y = -1; y < 3; y++)
+
+                    for (int x = -1; x < 2; x++)
                     {
-                        // if Surroundings are blocked or out of Border
-                        if ((pos.XValue + x == possiblePosition.XValue || pos.XValue - x < 0 || pos.XValue + x > Program.BoardWidth) || pos.YValue + y == possiblePosition.YValue || pos.YValue - y < 0 || pos.YValue + y > Program.BoardHeight)
+                        for (int y = -1; y < 2; y++)
                         {
-                            return false;
+                            Console.WriteLine("X:" + (possiblePosition.XValue + x) + "Y:" + (possiblePosition.YValue + y) );
+                            // if Surroundings are blocked or out of Border
+                            //if ((subship.XValue + x == possiblePosition.XValue || possiblePosition.XValue - x < 0 || possiblePosition.XValue + x > Program.BoardWidth) || subship.YValue + y == possiblePosition.YValue || possiblePosition.YValue - y < 0 || possiblePosition.YValue + y > Program.BoardHeight)
+                            //{
+                            //}
+
+                            foreach (Ship sh in battlefield)
+                            {
+                                foreach (Position pos in sh.subShips)
+                                {
+                                    Console.SetCursorPosition(pos.XValue, pos.YValue);
+                                    Console.Write("x");
+                                    Console.SetCursorPosition(0, 0);
+                                }
+                            }
+                            if (    possiblePosition.XValue + x > 0 &&
+                                   (possiblePosition.XValue + x < Program.BoardWidth) &&
+                                   possiblePosition.YValue + y > 0 &&
+                                   possiblePosition.YValue + y < Program.BoardHeight
+                                )
+                            {
+                                Console.SetCursorPosition(possiblePosition.XValue + x, possiblePosition.YValue + y);
+                                Console.ForegroundColor = ConsoleColor.Green;
+                                Console.Write("O");
+                                Console.SetCursorPosition(0, 0);
+                                Console.ForegroundColor = ConsoleColor.White;
+                            }
+                            if (    subship.XValue == possiblePosition.XValue + x ||
+                                    possiblePosition.XValue + x < 0 ||
+                                    (possiblePosition.XValue + x > Program.BoardWidth) ||
+
+                                    subship.YValue == possiblePosition.YValue + y||
+                                    possiblePosition.YValue + y < 0 ||
+                                    possiblePosition.YValue + y > Program.BoardHeight
+                                 )
+                            {
+                                Console.WriteLine("FALSE");
+                                return false;
+                            }
+                            else
+                            {
+                                return true;
+                            }
                         }
                     }
                 }

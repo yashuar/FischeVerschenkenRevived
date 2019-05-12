@@ -22,7 +22,7 @@ namespace FischeVerschenkenRevived
         private int cursorX;
         private int cursorY;
         private bool isFirstGameStart = true;
-        private List<Position> Battlefield;
+        private List<Ship> Battlefield;
         public bool RunGame(string v)
         {
             Random random = new Random();
@@ -81,7 +81,7 @@ namespace FischeVerschenkenRevived
 
         private void PrepareField(int boardHeight, int boardWidth)
         {
-            Battlefield = new List<Position>();
+            Battlefield = new List<Ship>();
             bool allShipsPlaced = false;
             while (allShipsPlaced == false)
             {
@@ -91,7 +91,7 @@ namespace FischeVerschenkenRevived
             
         }
 
-        private bool PlaceShip(List<Position> battlefield)
+        private bool PlaceShip(List<Ship> battlefield)
         {
             bool GeneralCanPlace;
             bool AllSubshipsPlaced = false;
@@ -120,27 +120,32 @@ namespace FischeVerschenkenRevived
                 // add Subships to Ship ship
                 while (subShips.Count < (int)ship.GetShipType())
                 {
-                    Position possiblePosition = new Position();
                     bool ValidXValue = true;
                     bool ValidYValue = true;
-
+                    Position possiblePosition = new Position();
                     // Place first Subship
                     if (subShips.Count == 0)
                     {
+                        
                         possiblePosition.XValue = random.Next(0,Program.BoardWidth);
                         possiblePosition.YValue = random.Next(0, Program.BoardHeight);
+                        ship.direction = (CardinalDirection)random.Next(0, 3);
 
                         // if there is a ship on the same Position already, set Valid_Value to false
-                        foreach (Position pos in Battlefield)
+                        foreach (Ship s in Battlefield)
                         {
-                            if (pos.XValue == possiblePosition.XValue)
+                            foreach (Position subship in s.subShips)
                             {
-                                ValidXValue = false;
+                                if (subship.XValue == possiblePosition.XValue)
+                                {
+                                    ValidXValue = false;
+                                }
+                                if (subship.YValue == possiblePosition.YValue)
+                                {
+                                    ValidYValue = false;
+                                }
                             }
-                            if (pos.YValue == possiblePosition.YValue)
-                            {
-                                ValidYValue = false;
-                            }
+                            
                         }
                         if (ValidXValue == true && ValidYValue == true)
                         {
@@ -150,34 +155,35 @@ namespace FischeVerschenkenRevived
                     }
                     else
                     {
-                        if (Helpers.CheckSurroundingFor(possiblePosition, battlefield, this) == true)
+                        Position nextPossiblePosition = new Position();
+                        switch (ship.direction)
                         {
-                            CardinalDirection direction = (CardinalDirection) random.Next(0, 3);
-                            switch (direction)
-                            {
-                                case CardinalDirection.North:
-                                    possiblePosition = subShips.First();
-                                    possiblePosition.YValue++;
-                                    subShips.Add(possiblePosition);
-                                    break;
-                                case CardinalDirection.East:
-                                    possiblePosition = subShips.First();
-                                    possiblePosition.XValue++;
-                                    subShips.Add(possiblePosition);
-                                    break;
-                                case CardinalDirection.South:
-                                    possiblePosition = subShips.First();
-                                    possiblePosition.YValue--;
-                                    subShips.Add(possiblePosition);
-                                    break;
-                                case CardinalDirection.West:
-                                    possiblePosition = subShips.First();
-                                    possiblePosition.XValue--;
-                                    subShips.Add(possiblePosition);
-                                    break;
-                                default:
-                                    break;
-                            }
+                            case CardinalDirection.North:
+                                nextPossiblePosition.YValue = (subShips[subShips.Count - 1].YValue + 1);
+                                nextPossiblePosition.XValue = subShips[subShips.Count - 1].XValue;
+                                subShips.Add(nextPossiblePosition);
+                                break;
+                            case CardinalDirection.East:
+                                nextPossiblePosition.YValue = subShips[subShips.Count - 1].YValue;
+                                nextPossiblePosition.XValue = (subShips[subShips.Count - 1].XValue + 1);
+                                subShips.Add(nextPossiblePosition);
+                                break;
+                            case CardinalDirection.South:
+                                nextPossiblePosition.YValue = (subShips[subShips.Count - 1].YValue - 1);
+                                nextPossiblePosition.XValue = subShips[subShips.Count - 1].XValue;
+                                subShips.Add(nextPossiblePosition);
+                                break;
+                            case CardinalDirection.West:
+                                nextPossiblePosition.YValue = subShips[subShips.Count - 1].YValue;
+                                nextPossiblePosition.XValue = (subShips[subShips.Count - 1].XValue + 1);
+                                subShips.Add(nextPossiblePosition);
+                                break;
+                            default:
+                                break;
+                        }
+                        if (Helpers.CheckSurroundingFor(nextPossiblePosition, battlefield, ship, this) == false)
+                        {
+                            return false;
                         }
                     }
                     
@@ -187,31 +193,53 @@ namespace FischeVerschenkenRevived
                 switch (ship.GetShipType())
                 {
                     case ShipType.Battleship:
-                        countOfBattleShip++;
+                        if (countOfBattleShip == 1)
+                        {
+                            AllSubshipsPlaced = true;
+                            Battlefield.Add(ship);
+                            countOfBattleShip++;
+                        }
                         break;
                     case ShipType.Cruiser:
-                        countOfCruiser++;
+                        if (countOfCruiser == 2)
+                        {
+                            AllSubshipsPlaced = true;
+                            Battlefield.Add(ship);
+                            countOfCruiser++;
+                        }
                         break;
                     case ShipType.Destroyer:
-                        countOfDestroyer++;
+                        if (countOfDestroyer == 3)
+                        {
+                            AllSubshipsPlaced = true;
+                            Battlefield.Add(ship);
+                            countOfDestroyer++;
+                        }
                         break;
                     case ShipType.Submarine:
-                        countOfSubmarine++;
+                        if (countOfSubmarine == 4)
+                        {
+                            AllSubshipsPlaced = true;
+                            Battlefield.Add(ship);
+                            countOfSubmarine++;
+                        }
                         break;
                     case ShipType.NoShip:
                         break;
                     default:
                         break;
                 }
+
+                if (this.Battlefield.Count == 10)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
-            if (!GeneralCanPlace)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return false;
         }
     }
 }

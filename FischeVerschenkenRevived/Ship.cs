@@ -8,7 +8,8 @@ namespace FischeVerschenkenRevived
 {
     class Ship
     {
-        List<Position> subShips;
+        public List<Position> subShips;
+        public Game.CardinalDirection direction;
 
         Game.ShipType type;
 
