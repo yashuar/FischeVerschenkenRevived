@@ -113,69 +113,73 @@ namespace FischeVerschenkenRevived
         internal static Game.ShipType RandomShipType()
         {
 
-            return (Game.ShipType)random.Next(2, 5);
+            return (Game.ShipType)random.Next(2, 6);
         }
 
-        internal static bool CheckSurroundingFor(Position possiblePosition, System.Collections.Generic.List<Ship> battlefield, Ship ship, Game game)
+        internal static bool CheckSurroundingFor(Position possiblePosition, System.Collections.Generic.List<Ship> battlefield, bool debug)
         {
-
-            foreach (Ship s in battlefield)
+            for (int x = -1; x < 2; x++)
             {
-                foreach (Position subship in s.subShips)
-                {
-
-                    for (int x = -1; x < 2; x++)
+                for (int y = -1; y < 2; y++)
+                { 
+                    if (!(possiblePosition.XValue + x < 0) && !(possiblePosition.YValue + y < 0))
                     {
-                        for (int y = -1; y < 2; y++)
+                        if (!(possiblePosition.XValue + x > Program.BoardWidth) && !(possiblePosition.YValue > Program.BoardHeight))
                         {
-                            Console.WriteLine("X:" + (possiblePosition.XValue + x) + "Y:" + (possiblePosition.YValue + y) );
-                            // if Surroundings are blocked or out of Border
-                            //if ((subship.XValue + x == possiblePosition.XValue || possiblePosition.XValue - x < 0 || possiblePosition.XValue + x > Program.BoardWidth) || subship.YValue + y == possiblePosition.YValue || possiblePosition.YValue - y < 0 || possiblePosition.YValue + y > Program.BoardHeight)
-                            //{
-                            //}
-
-                            foreach (Ship sh in battlefield)
+                            if (debug)
+	                        {
+                                DrawCheckGenerator(possiblePosition, x, y);
+                            }
+                            foreach (Ship s in battlefield)
                             {
-                                foreach (Position pos in sh.subShips)
+                                foreach (Position subship in s.subShips)
                                 {
-                                    Console.SetCursorPosition(pos.XValue, pos.YValue);
-                                    Console.Write("x");
-                                    Console.SetCursorPosition(0, 0);
+                                    if (debug)
+	                                {
+                                        DrawShipGenerator(subship);
+                                    }
+                                    if (possiblePosition.XValue + x == subship.XValue && possiblePosition.YValue + y == subship.YValue)
+                                    {
+                                        Console.SetCursorPosition(possiblePosition.XValue + x, possiblePosition.YValue + y);
+                                        Console.BackgroundColor = ConsoleColor.Red;
+                                        Console.Write("/");
+                                        Console.ResetColor();
+                                        return false;
+                                    }
                                 }
                             }
-                            if (    possiblePosition.XValue + x > 0 &&
-                                   (possiblePosition.XValue + x < Program.BoardWidth) &&
-                                   possiblePosition.YValue + y > 0 &&
-                                   possiblePosition.YValue + y < Program.BoardHeight
-                                )
-                            {
-                                Console.SetCursorPosition(possiblePosition.XValue + x, possiblePosition.YValue + y);
-                                Console.ForegroundColor = ConsoleColor.Green;
-                                Console.Write("O");
-                                Console.SetCursorPosition(0, 0);
-                                Console.ForegroundColor = ConsoleColor.White;
-                            }
-                            if (    subship.XValue == possiblePosition.XValue + x ||
-                                    possiblePosition.XValue + x < 0 ||
-                                    (possiblePosition.XValue + x > Program.BoardWidth) ||
-
-                                    subship.YValue == possiblePosition.YValue + y||
-                                    possiblePosition.YValue + y < 0 ||
-                                    possiblePosition.YValue + y > Program.BoardHeight
-                                 )
-                            {
-                                Console.WriteLine("FALSE");
-                                return false;
-                            }
-                            else
-                            {
-                                return true;
-                            }
                         }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        return false;
                     }
                 }
             }
             return true;
+        }
+
+        internal static void DrawCheckGenerator(Position possiblePosition, int x, int y)
+        {
+            // draw X,Y Coordinates
+            Console.SetCursorPosition(Program.BoardWidth + 4, Program.BoardHeight + 4);
+            Console.Write("XXXXX");
+            Console.SetCursorPosition(Program.BoardWidth + 4, Program.BoardHeight + 4);
+            Console.Write((possiblePosition.XValue + x) + "," + (possiblePosition.YValue + y));
+            //draw Checked Fields
+            Console.SetCursorPosition(possiblePosition.XValue + x, possiblePosition.YValue + y);
+            Console.Write("X");
+        }
+        internal static void DrawShipGenerator(Position subship)
+        {
+            Console.SetCursorPosition(subship.XValue, subship.YValue);
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write("O");
+            Console.ResetColor();
         }
     }
 }
