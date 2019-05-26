@@ -17,7 +17,7 @@ namespace FischeVerschenkenRevived
         public static int countOfSubmarine = 0;
         public int[] countOf = new int[6];
         private static Random random = new Random();
-
+        private List<Position> shotAt = new List<Position>();
         private bool debug;
         private int cursorX;
         private int cursorY;
@@ -45,7 +45,7 @@ namespace FischeVerschenkenRevived
                     break;
                 case "Play":
                     PrepareField(Program.BoardHeight, Program.BoardWidth);
-                    //TODO DrawGame();
+                    DrawGame();
                     Console.ReadKey();
                     break;
                 default:
@@ -72,11 +72,48 @@ namespace FischeVerschenkenRevived
             do
             {
                 Console.Clear();
+                CheckForWin();
                 DrawField();
                 DrawCursor(cursorX, cursorY);
                 UserInteraction();
             } while (!gamefinished);
             
+        }
+
+        private void CheckForWin()
+        {
+            int DestructionCounter = 0;
+            foreach (Ship ship in Battlefield)
+            {
+                if (ship.isDestroyed)
+                {
+                    DestructionCounter++;
+                }
+            }
+            if (DestructionCounter == 10)
+            {
+                ShowWin();
+                gamefinished = true;
+            }
+        }
+
+        private void ShowWin()
+        {
+            string[] WinArray = {
+                "+---------------------+",
+                "|                     |",
+                "| Glückwunsch         |",
+                "| Sie haben gewonnen! |",
+                "|                     |",
+                "+---------------------+" };
+            Console.SetCursorPosition(Console.BufferWidth / 2, Console.BufferHeight / 2);
+            for (int i = Console.BufferWidth / 2; i < (Console.BufferWidth / 2 ) + WinArray.Length; i++)
+            {
+                    Console.SetCursorPosition(i, Console.BufferHeight / 2);
+                    Console.WriteLine(WinArray[i - (Console.BufferWidth / 2)]);
+            }
+            
+            Console.ReadLine();
         }
 
         private void UserInteraction()
@@ -398,6 +435,7 @@ namespace FischeVerschenkenRevived
         private void Shoot()
         {
             Position subship = new Position(cursorX, cursorY, false);
+            shotAt.Add(subship);
             foreach (Ship ship in Battlefield)
             {
                 Position match = ship.subShips.FirstOrDefault(shipToCheck => shipToCheck.XValue == cursorX && shipToCheck.YValue == cursorY);
@@ -412,55 +450,82 @@ namespace FischeVerschenkenRevived
         {
             Console.SetCursorPosition(cursorX * 2,cursorY);
             Console.Write("><");
+            Position Cursorposition = new Position(cursorX, cursorY, true);
+            foreach (Ship ship in Battlefield)
+            {
+                foreach (Position sub in ship.subShips)
+                {
+                    if (sub.isHit && sub.XValue == cursorX && sub.YValue == cursorY)
+                    {                        
+                        if (ship.isDestroyed == true)
+                        {
+                            Console.SetCursorPosition(Console.BufferWidth / 2 - 5, Console.BufferHeight - 4);
+                            Console.Write(ship.GetShipType() + " zerstört ");
+                        }
+                        
+
+                    }
+                }
+            }
             Console.SetCursorPosition(Console.BufferWidth - 10, Console.BufferHeight - 4);
-            Console.Write(cursorX.ToString() + cursorY.ToString());
+            Console.Write(cursorX.ToString() +"X, " + cursorY.ToString() + "Y");
         }
 
         private void DrawField()
         {
-            for (int yIterator = 0; yIterator < Program.BoardHeight; yIterator++)
+            for (int yIterator = 0; yIterator <= Program.BoardHeight; yIterator++)
             {
                 string Line = "";
-                string Cell = "~~";
+                string Cell = null;
+                bool shotat = false;
                 for (int xIterator = 0; xIterator <= Program.BoardWidth; xIterator++)
                 {
+                    foreach (Position pos in shotAt)
+                    {
+                        if (pos.XValue == xIterator && pos.YValue == yIterator)
+                        {
+                            shotat = true;
+                        }
+                    }
                     Position subShipPosition = new Position(xIterator, yIterator, true);
                     Ship match = null;
-                    try
+                    foreach (Ship ship in Battlefield)
                     {
-                        match = Battlefield.First(myShip => myShip.subShips.Contains(subShipPosition));
-                    }
-                    catch (InvalidOperationException)
-                    {
-                        // do nothing if the list is empty
-                    }
-                    
-                    if (match != null)
-                    {
-                        foreach (Position subsh in match.subShips)
+                        int subshipHitCounter = 0;
+                        foreach (Position subship in ship.subShips)
                         {
-                            if (subsh.XValue == xIterator && subsh.YValue == yIterator && subsh.isHit == true)
+                            if (subship.isHit)
                             {
-                                Cell = "XX";
+                                subshipHitCounter++;
+                            }
+                            if (subship.XValue == subShipPosition.XValue && subship.YValue == subShipPosition.YValue && subship.isHit == true)
+                            {
+                                match = ship;
+                            }
+                            if (ship.subShips.Count == subshipHitCounter)
+                            {
+                                ship.isDestroyed = true;
                             }
                         }
+                    }
+                    if (match != null && match.isDestroyed == false)
+                    {
+                        Cell = "■■";
+                    }
+                    else if (match != null && match.isDestroyed == true)
+                    {
+                        Cell =  "██";
+                    }
+                    else if (shotat == true)
+                    {
+                        Cell = "%%";
                     }
                     else
                     {
                         Cell = "~~";
                     }
-
-                    //foreach (Ship ship in Battlefield)
-                    //{
-                    //    Position match = ship.subShips.FirstOrDefault(shipToCheck => shipToCheck.XValue == cursorX && shipToCheck.YValue == cursorY && shipToCheck.isHit == true);
-                    //    Cell = "~~";
-                    //    if (match != null)
-                    //    {
-                    //        Cell = "XX";
-                    //        break;
-                    //    }
-                    //}
                     Line += Cell;
+                    shotat = false;
                 }
                 Console.WriteLine(Line);
             }

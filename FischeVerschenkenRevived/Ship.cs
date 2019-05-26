@@ -10,6 +10,7 @@ namespace FischeVerschenkenRevived
     {
         public List<Position> subShips;
         public Game.CardinalDirection direction;
+        public bool isDestroyed;
 
         Game.ShipType type;
 

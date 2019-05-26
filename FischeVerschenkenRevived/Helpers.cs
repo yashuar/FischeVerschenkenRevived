@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 
 namespace FischeVerschenkenRevived
 {
@@ -6,7 +7,8 @@ namespace FischeVerschenkenRevived
     {
         private static int AmountOfPlacedShips;
         private static Random random = new Random();
-        public static string[] MainMenu()
+
+    public static string[] MainMenu()
         {
             string Line1and11 = "+-----------------------------+";
             string Line2 = "|                       _ O X |";

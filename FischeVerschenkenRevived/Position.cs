@@ -9,10 +9,10 @@
         public Position()
         { }
 
-        public Position(int xIterator, int yIterator, bool v)
+        public Position(int xPosition, int yPosition, bool v)
         {
-            this.XValue = xIterator;
-            this.YValue = yIterator;
+            this.XValue = xPosition;
+            this.YValue = yPosition;
             this.isHit = v;
         }
     }
