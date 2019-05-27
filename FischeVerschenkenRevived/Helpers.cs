@@ -75,7 +75,7 @@ namespace FischeVerschenkenRevived
             switch (v)
             {
                 case "Height":
-                    int maxHeight = Console.LargestWindowHeight - 10;
+                    int maxHeight = Console.WindowHeight - 2;
                     Console.Clear();
                     Console.WriteLine("Bitte geben Sie die Höhe");
                     Console.WriteLine("des Spielfelds als Zahl ein");
@@ -91,7 +91,7 @@ namespace FischeVerschenkenRevived
                     }
                     break;
                 case "Width":
-                    int maxWidth = (Console.LargestWindowWidth - 10) / 2;
+                    int maxWidth = (Console.WindowWidth / 2) - 2;
                     Console.Clear();
                     Console.WriteLine("Bitte geben Sie die Breite");
                     Console.WriteLine("des Spielfelds als Zahl ein");

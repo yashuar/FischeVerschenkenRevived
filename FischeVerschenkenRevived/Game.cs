@@ -106,14 +106,15 @@ namespace FischeVerschenkenRevived
                 "| Sie haben gewonnen! |",
                 "|                     |",
                 "+---------------------+" };
-            Console.SetCursorPosition(Console.BufferWidth / 2, Console.BufferHeight / 2);
-            for (int i = Console.BufferWidth / 2; i < (Console.BufferWidth / 2 ) + WinArray.Length; i++)
+            Console.SetCursorPosition((Console.WindowWidth / 2) - (WinArray.Length / 2), Console.WindowHeight / 2);
+            for (int i = 0; i < WinArray.Length; i++)
             {
-                    Console.SetCursorPosition(i, Console.BufferHeight / 2);
-                    Console.WriteLine(WinArray[i - (Console.BufferWidth / 2)]);
+                    Console.SetCursorPosition((Console.WindowWidth / 2) - WinArray[0].Length / 2, i + (Console.WindowHeight / 2) - WinArray.Length);
+                    Console.WriteLine(WinArray[i]);
             }
-            
+            gamefinished = true;
             Console.ReadLine();
+            Console.Clear();
         }
 
         private void UserInteraction()
@@ -296,8 +297,10 @@ namespace FischeVerschenkenRevived
                 case ConsoleKey.Divide:
                     break;
                 case ConsoleKey.F1:
+                    ShowHelp();
                     break;
                 case ConsoleKey.F2:
+                    DebugWin();
                     break;
                 case ConsoleKey.F3:
                     break;
@@ -432,6 +435,22 @@ namespace FischeVerschenkenRevived
             }
         }
 
+        private void DebugWin()
+        {
+            foreach (Ship ship in Battlefield)
+            {
+                foreach (Position subship  in ship.subShips)
+                {
+                    subship.isHit = true;
+                }
+            }
+        }
+
+        private void ShowHelp()
+        {
+            throw new NotImplementedException();
+        }
+
         private void Shoot()
         {
             Position subship = new Position(cursorX, cursorY, false);
@@ -456,10 +475,12 @@ namespace FischeVerschenkenRevived
                 foreach (Position sub in ship.subShips)
                 {
                     if (sub.isHit && sub.XValue == cursorX && sub.YValue == cursorY)
-                    {                        
+                    {
+                        Console.SetCursorPosition(Console.WindowWidth / 2 - 5, Console.WindowHeight - 4);
+                        Console.Write("Treffer");
                         if (ship.isDestroyed == true)
                         {
-                            Console.SetCursorPosition(Console.BufferWidth / 2 - 5, Console.BufferHeight - 4);
+                            Console.SetCursorPosition(Console.WindowWidth / 2 - 5, Console.WindowHeight - 4);
                             Console.Write(ship.GetShipType() + " zerstört ");
                         }
                         
@@ -467,8 +488,8 @@ namespace FischeVerschenkenRevived
                     }
                 }
             }
-            Console.SetCursorPosition(Console.BufferWidth - 10, Console.BufferHeight - 4);
-            Console.Write(cursorX.ToString() +"X, " + cursorY.ToString() + "Y");
+            Console.SetCursorPosition(Console.WindowWidth - 10, Console.WindowHeight - 4);
+            Console.Write(cursorX.ToString() + "X, " + cursorY.ToString() + "Y");
         }
 
         private void DrawField()
