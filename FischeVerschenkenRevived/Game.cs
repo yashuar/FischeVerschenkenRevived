@@ -297,7 +297,7 @@ namespace FischeVerschenkenRevived
                 case ConsoleKey.Divide:
                     break;
                 case ConsoleKey.F1:
-                    ShowHelp();
+                    ShowHints();
                     break;
                 case ConsoleKey.F2:
                     DebugWin();
@@ -446,11 +446,6 @@ namespace FischeVerschenkenRevived
             }
         }
 
-        private void ShowHelp()
-        {
-            throw new NotImplementedException();
-        }
-
         private void Shoot()
         {
             Position subship = new Position(cursorX, cursorY, false);
@@ -558,12 +553,13 @@ namespace FischeVerschenkenRevived
             Console.SetWindowSize(Program.BoardWidth * 2 + 10, Program.BoardHeight + 10);
             Console.SetBufferSize(Program.BoardWidth * 2 + 10, Program.BoardHeight + 10);
             Console.SetWindowSize(Program.BoardWidth * 2 + 10, Program.BoardHeight + 10);
-            Console.WriteLine("Gleich geht es los, F2 Beendet das Spiel.");
-            Console.Write("Fehlschüsse");
-            Console.Write("getroffene Schiffe");
-            Console.Write("leere Felder");
-            Console.Write("Cursor");
-            Console.WriteLine("Gesteuert wird mit den Pfeiltasten, geschossen mit der Leertaste.");
+            Console.Clear();
+            Console.WriteLine("Gleich geht es los, F1 zeigt diesen Text erneut.");
+            Console.Write(" Fehlschüsse : %%, ");
+            Console.Write(" getroffene Schiffe: ██, ");
+            Console.Write(" leere Felder: ~~, ");
+            Console.Write(" Cursor: ><, ");
+            Console.WriteLine(" Gesteuert wird mit den Pfeiltasten, geschossen mit der Leertaste.");
             Console.ReadLine();
             Console.Clear();
             Program.isFirstGameStart = false;
