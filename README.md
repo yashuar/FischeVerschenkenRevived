@@ -1,5 +1,5 @@
 FischeVerschenkenRevived--
-Thisis a little Project for School. It's supposed to be some kind of Battleships version, where you shoot down randomly placed ships.
+This is a little Project for School. It's supposed to be some kind of Battleships version, where you shoot down randomly placed ships.
 
 Prerequisites
 What things you need to install the software and how to install them
