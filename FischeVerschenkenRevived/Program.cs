@@ -32,6 +32,7 @@ namespace FischeVerschenkenRevived
         private static void StartApp()
         {
             bool firstMenuDraw = true;
+            Helpers.ShowHelp();
             string[] myMenu  = Helpers.MainMenu();
             string[] myMenuSelected = Helpers.MainMenuSelected();
             do

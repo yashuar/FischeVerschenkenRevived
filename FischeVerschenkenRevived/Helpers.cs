@@ -5,7 +5,6 @@ namespace FischeVerschenkenRevived
 {
     internal class Helpers
     {
-        private static int AmountOfPlacedShips;
         private static Random random = new Random();
 
     public static string[] MainMenu()
@@ -37,6 +36,53 @@ namespace FischeVerschenkenRevived
             return toReturn;
 
         }
+
+        internal static void ShowHelp()
+        {
+            Randomcaps("fische verschenken revived");
+
+            Console.ReadKey();
+
+            Console.WriteLine("Im folgenden Menü wird mit den Pfeiltasten gesteuert, Eingabe wird mit Enter getätigt.");
+
+            Console.ReadKey();
+
+        }
+
+        private static void Randomcaps(string v)
+        {
+            Random random = new Random();
+            for (int i = 0; i < Console.WindowHeight; i++)
+            {
+                string tempString = "";
+                foreach (char ch in v)
+                {
+                    bool Caps = (random.Next(0, 2) == 0);
+                    if (Caps)
+                    {
+                        char tempChar = ch.ToString().ToUpper().ToCharArray()[0];
+                        tempString += tempChar;
+                    }
+                    else
+                    {
+                        char tempChar = ch.ToString().ToCharArray()[0];
+                        tempString += tempChar;
+                    }
+
+                }
+                
+                System.Threading.Thread.Sleep(100);
+                Console.Clear();
+                Console.SetCursorPosition(Console.WindowWidth / 2, Console.WindowHeight / 2);
+                Console.WriteLine(tempString);
+                Console.SetCursorPosition(Console.WindowWidth / 2, (Console.WindowHeight / 2) + 1);
+                Console.WriteLine(tempString);
+                Console.SetCursorPosition(Console.WindowWidth / 2, (Console.WindowHeight / 2) + 2);
+                Console.WriteLine(tempString);
+                Console.WriteLine("Hit ANY KEY to continue");
+            }
+        }
+
         public static string[] MainMenuSelected()
         {
             string Line1and11 = "+-----------------------------+";

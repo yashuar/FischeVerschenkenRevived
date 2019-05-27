@@ -18,10 +18,8 @@ namespace FischeVerschenkenRevived
         public int[] countOf = new int[6];
         private static Random random = new Random();
         private List<Position> shotAt = new List<Position>();
-        private bool debug;
         private int cursorX;
         private int cursorY;
-        private bool isFirstGameStart = true;
         private List<Ship> Battlefield;
         private bool gamefinished = false;
 
@@ -595,7 +593,7 @@ namespace FischeVerschenkenRevived
                     possiblePosition.YValue = random.Next(0, Program.BoardHeight);
 
                     ship.direction = (CardinalDirection)random.Next(0, 3);
-                    if (Helpers.CheckSurroundingFor(possiblePosition, battlefield, true) == true)
+                    if (Helpers.CheckSurroundingFor(possiblePosition, battlefield, false) == true)
                     {
                         subShips.Add(possiblePosition);
                     }
@@ -655,7 +653,7 @@ namespace FischeVerschenkenRevived
                         default:
                             break;
                     }
-                    if (Helpers.CheckSurroundingFor(nextPossiblePosition, battlefield, true) == true)
+                    if (Helpers.CheckSurroundingFor(nextPossiblePosition, battlefield, false) == true)
                     {
                         subShips.Add(nextPossiblePosition);
                     }
